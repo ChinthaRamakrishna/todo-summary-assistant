@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "./useToast";
 import { useAuth } from '@/lib/auth';
 import type { Todo } from '@/lib/types';
 import { useTodos } from './useTodos';

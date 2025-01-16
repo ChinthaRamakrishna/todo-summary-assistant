@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useTodos } from '@/lib/hooks/useTodos';
-import { useAddTodo } from '@/lib/hooks/useAddTodo';
-import { useDeleteTodo } from '@/lib/hooks/useDeleteTodo';
-import { useToggleTodo } from '@/lib/hooks/useToggleTodo';
+import { useTodos } from '@/hooks/useTodos';
+import { useAddTodo } from '@/hooks/useAddTodo';
+import { useDeleteTodo } from '@/hooks/useDeleteTodo';
+import { useToggleTodo } from '@/hooks/useToggleTodo';
 import { TodoSkeleton } from './TodoSkeleton';
 import { TodoForm } from './TodoForm';
 import { TodoItem } from './TodoItem';

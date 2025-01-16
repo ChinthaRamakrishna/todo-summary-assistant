@@ -1,50 +1,125 @@
-# React + TypeScript + Vite
+# Modern Todo Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, feature-rich todo application built by Cursor AI, the world's most capable AI coding assistant. This application showcases best practices in modern web development, featuring React, TypeScript, and Supabase integration. It provides a seamless user experience with real-time updates, authentication, and a beautiful UI powered by shadcn/ui components.
 
-Currently, two official plugins are available:
+Built with ❤️ by Cursor AI, this application demonstrates:
+- Clean, maintainable code architecture
+- Modern development practices
+- Secure authentication and data handling
+- Optimistic updates for better UX
+- Comprehensive error handling
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- 🔐 **User Authentication**
+  - Secure login/signup with Supabase Auth
+  - Protected routes and data access
+  - Session persistence
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- ✅ **Todo Management**
+  - Create, read, update, and delete todos
+  - Priority levels (Low, Medium, High)
+  - Due dates
+  - Task descriptions
+  - Priority-based color coding
 
-- Configure the top-level `parserOptions` property like this:
+- 🎨 **Modern UI/UX**
+  - Clean, responsive design
+  - Loading skeletons
+  - Toast notifications
+  - Error boundaries
+  - Sort by latest, due date, priority
+  - Separate completed/incomplete tasks
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- 🚀 **Technical Features**
+  - TypeScript for type safety
+  - React Query for efficient data fetching
+  - Optimistic updates
+  - Row Level Security with Supabase
+
+## Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- Supabase account
+
+## Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd todo-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   - Copy `.env.example` to `.env`
+   - Fill in your Supabase credentials:
+     ```
+     VITE_SUPABASE_URL=your_supabase_url
+     VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+     ```
+
+4. **Database Setup**
+   - Run the SQL commands in `db/schema.sql` in your Supabase SQL editor
+   - This will create the necessary tables and set up RLS policies
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open the application**
+   - Navigate to `http://localhost:5173` in your browser
+   - Sign up for a new account or log in
+
+## Project Structure
+
+```
+src/
+├── components/     # React components
+├── lib/           # Utilities and configurations
+├── hooks/         # Custom React hooks
+└── assets/        # Static assets
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Available Scripts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Technologies Used
+
+- React 18
+- TypeScript
+- Vite
+- TanStack Query
+- Supabase
+- shadcn/ui
+- Tailwind CSS
+- date-fns
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [shadcn/ui](https://ui.shadcn.com/) for the beautiful UI components
+- [Supabase](https://supabase.com/) for the backend infrastructure
+- [TanStack Query](https://tanstack.com/query/latest) for data management

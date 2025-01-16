@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '../supabase'
-import { useAuth } from '../auth'
-import type { Todo } from '../types'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/auth'
+import type { Todo } from '@/lib/types'
 
 export function useTodos() {
   const queryClient = useQueryClient()

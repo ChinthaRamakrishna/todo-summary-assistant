@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
     "test:db": "tsx src/lib/supabase.test.ts",
     "test:db:watch": "tsx watch src/lib/supabase.test.ts",
     "supabase:status": "tsx src/lib/supabase.test.ts"

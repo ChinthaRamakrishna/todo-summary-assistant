@@ -542,56 +542,67 @@ describe('TodoCreate', () => {
 
 ## 14. File Structure
 ```
-todo-app/
-├── src/
-│   ├── components/
-│   │   ├── ui/
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
-│   │   │   ├── checkbox.tsx
-│   │   │   ├── datepicker.tsx
-│   │   │   ├── input.tsx
-│   │   │   ├── select.tsx
-│   │   │   └── toast.tsx
-│   │   ├── Auth.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── TodoForm.tsx
-│   │   ├── TodoItem.tsx
-│   │   ├── TodoList.tsx
-│   │   └── TodoSort.tsx
-│   ├── lib/
-│   │   ├── auth.ts
-│   │   ├── supabase.ts
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   ├── hooks/
-│   │   ├── useAddTodo.ts
-│   │   ├── useDeleteTodo.ts
-│   │   ├── useToggleTodo.ts
-│   │   └── useTodos.ts
-│   ├── assets/
-│   ├── App.tsx
-│   ├── App.css
-│   ├── index.css
-│   ├── main.tsx
-│   └── vite-env.d.ts
-├── db/
-│   └── schema.sql
-├── public/
-├── .env
-├── .env.test
-├── .gitignore
-├── .postcssrc
-├── components.json
-├── eslint.config.js
-├── index.html
-├── package.json
-├── package-lock.json
-├── postcss.config.js
-├── README.md
-├── tailwind.config.js
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-└── vite.config.ts
+src/
+├── components/           # React components
+│   ├── ui/              # UI components from shadcn
+│   │   ├── button.tsx   # Button component
+│   │   ├── card.tsx     # Card component
+│   │   ├── separator.tsx # Separator component
+│   │   ├── toast.tsx    # Toast component
+│   │   └── toaster.tsx  # Toaster provider
+│   ├── Auth.tsx         # Authentication component
+│   ├── DatePicker.tsx   # Date picker component
+│   ├── ErrorBoundary.tsx # Error boundary component
+│   ├── PriorityChip.tsx # Priority indicator component
+│   ├── TodoForm.tsx     # Todo creation form
+│   ├── TodoItem.tsx     # Individual todo item
+│   ├── TodoList.tsx     # Main todo list component
+│   ├── TodoSkeleton.tsx # Loading skeleton for todos
+│   └── TodoSort.tsx     # Todo sorting controls
+├── hooks/               # Custom React hooks
+│   ├── useAddTodo.ts    # Todo creation hook
+│   ├── useDeleteTodo.ts # Todo deletion hook
+│   ├── useToast.ts      # Toast notifications hook
+│   ├── useTodos.ts      # Todo data management hook
+│   └── useToggleTodo.ts # Todo completion hook
+├── lib/                 # Core utilities and types
+│   ├── auth.tsx         # Authentication context and utilities
+│   ├── supabase.ts     # Supabase client configuration
+│   ├── types.ts        # TypeScript type definitions
+│   └── utils.ts        # Utility functions
+├── App.tsx             # Main application component
+├── main.tsx           # Application entry point
+└── index.css          # Global styles
+
 ```
+
+### Key Components
+
+- **Auth.tsx**: Handles user authentication using Supabase Auth
+- **TodoList.tsx**: Main component for displaying and managing todos
+- **TodoForm.tsx**: Form for creating new todos with priority and due date
+- **TodoItem.tsx**: Individual todo item with completion, deletion, and description
+- **ErrorBoundary.tsx**: React error boundary for graceful error handling
+- **PriorityChip.tsx**: Visual indicator for todo priority levels
+- **TodoSkeleton.tsx**: Loading placeholder for todos
+- **TodoSort.tsx**: Controls for sorting todos by various criteria
+
+### Custom Hooks
+
+- **useTodos.ts**: Main hook for todo CRUD operations and data management
+- **useAddTodo.ts**: Handles todo creation with optimistic updates
+- **useDeleteTodo.ts**: Manages todo deletion with optimistic updates
+- **useToggleTodo.ts**: Controls todo completion status
+- **useToast.ts**: Manages toast notifications for user feedback
+
+### Core Features
+
+- Supabase integration for backend and authentication
+- Optimistic updates for better UX
+- Error boundaries for graceful error handling
+- Loading states with skeletons
+- Priority-based styling with visual indicators
+- Responsive design with modern UI components
+- Toast notifications for user feedback
+- Sort functionality by creation date, due date, and priority
+- Visual separation of completed and incomplete tasks
