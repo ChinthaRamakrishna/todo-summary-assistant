@@ -49,6 +49,7 @@ export function TodoItem({
             onCheckedChange={() => onToggleComplete(todo.id, todo.completed)}
             className="h-5 w-5"
             disabled={isUpdating}
+            aria-label={`Mark "${todo.text}" as ${todo.completed ? 'incomplete' : 'complete'}`}
           />
           <div className="flex-1">
             <span className={`text-lg ${
@@ -66,6 +67,8 @@ export function TodoItem({
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-gray-500 hover:text-gray-700"
+                aria-label={`${isExpanded ? 'Hide' : 'Show'} description`}
+                aria-expanded={isExpanded}
               >
                 {isExpanded ? (
                   <ChevronUp className="h-4 w-4" />
@@ -90,6 +93,7 @@ export function TodoItem({
               onClick={() => onDelete(todo.id)}
               className="hover:bg-gray-100 hover:text-gray-700 transition-colors"
               disabled={isDeleting}
+              aria-label={`Delete "${todo.text}"`}
             >
               {isDeleting ? (
                 <span className="h-4 w-4">...</span>
