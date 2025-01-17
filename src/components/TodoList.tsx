@@ -52,7 +52,7 @@ export function TodoList() {
 
   if (isLoading) {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto" data-testid="todo-list-loading">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <TodoSkeleton />
         </div>
@@ -61,7 +61,7 @@ export function TodoList() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto" data-testid="todo-list">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <TodoForm 
           onSubmit={addTodo}
@@ -73,7 +73,7 @@ export function TodoList() {
           onChange={setSortBy}
         />
 
-        <div className="space-y-3">
+        <div className="space-y-3" data-testid="incomplete-todos">
           {incompleteTodos.map(todo => (
             <TodoItem
               key={todo.id}
@@ -86,7 +86,7 @@ export function TodoList() {
           ))}
           
           {completeTodos.length > 0 && incompleteTodos.length > 0 && (
-            <div className="py-4">
+            <div className="py-4" data-testid="todo-separator">
               <Separator className="bg-gray-200" />
             </div>
           )}
@@ -103,7 +103,7 @@ export function TodoList() {
           ))}
           
           {!todos?.length && (
-            <div className="text-center py-12">
+            <div className="text-center py-12" data-testid="empty-state">
               <p className="text-gray-500 text-lg">No tasks yet. Add one above!</p>
             </div>
           )}

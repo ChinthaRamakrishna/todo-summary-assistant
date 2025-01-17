@@ -10,11 +10,18 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
-    exclude: ['**/*.integration.{js,jsx,ts,tsx}'],
+    exclude: [
+      'src/main.tsx',
+      'src/App.tsx',
+      '**/*.integration.{js,jsx,ts,tsx}'
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
+        'src/main.tsx',
+        'src/App.tsx',
         'node_modules/**',
         'src/components/ui/**',
         'dist/**',
