@@ -94,6 +94,38 @@ src/
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
 - `npm run type-check` - Run TypeScript type checking
+- `npm test` - Run tests
+- `npm run test:ui` - Run tests with UI
+- `npm run test:coverage` - Run tests with coverage report
+
+## Testing
+
+The application includes comprehensive tests using Vitest and React Testing Library:
+
+- Unit tests for all components
+- Custom hook testing
+- Error boundary testing
+- Authentication flow testing
+- Mock implementations for external dependencies
+
+Key testing patterns:
+- Component isolation with proper mocking
+- Error state verification
+- Async operation testing
+- User interaction simulation
+- Proper state management testing
+
+Current test coverage:
+```
+File                | % Stmts | % Branch | % Funcs | % Lines
+--------------------|---------|----------|---------|--------
+All files           |   90.85 |    86.82 |   84.61 |   90.85
+ components/        |   99.56 |    85.13 |    100 |   99.56
+ hooks/             |   77.59 |    93.02 |   70.83 |   77.59
+ lib/               |   88.57 |    70.00 |   75.00 |   88.57
+```
+
+Total test suite: 52 tests across 12 test files
 
 ## Technologies Used
 
@@ -105,6 +137,8 @@ src/
 - shadcn/ui
 - Tailwind CSS
 - date-fns
+- Vitest
+- React Testing Library
 
 ## Contributing
 

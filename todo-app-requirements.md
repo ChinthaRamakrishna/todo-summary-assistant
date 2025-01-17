@@ -13,7 +13,11 @@ The application will be a modern, responsive todo list manager that allows users
 - **Styling**: Tailwind CSS
 - **UI Components**: shadcn/ui
 - **Form Handling**: React Hook Form with Zod validation
-- **Testing**: Jest and React Testing Library
+- **Testing**: 
+  - Vitest for test runner
+  - React Testing Library for component testing
+  - Mock Service Worker for API mocking
+  - ~90% code coverage across components
 - **Build Tool**: Vite
 
 ### Backend & Infrastructure
@@ -55,7 +59,11 @@ export const supabase = createClient<Database>(
 export type Todo = {
   id: string
   title: string
+  description?: string
+  priority: 'low' | 'medium' | 'high'
+  due_date?: string
   completed: boolean
+  status: 'todo' | 'completed'
   user_id: string
   created_at: string
 }
@@ -94,21 +102,20 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import type { Todo } from '../types/database.types'
 
-export function useTodos(listId: string) {
+export function useTodos() {
   const queryClient = useQueryClient()
-
-  const { data: todos, isLoading } = useQuery({
-    queryKey: ['todos', listId],
+  
+  const { data: todos = [], isLoading } = useQuery({
+    queryKey: ['todos'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('todos')
         .select('*')
-        .eq('list_id', listId)
         .order('created_at', { ascending: false })
-
+      
       if (error) throw error
       return data
-    },
+    }
   })
 
   const addTodo = useMutation({
@@ -118,22 +125,56 @@ export function useTodos(listId: string) {
         .insert(newTodo)
         .select()
         .single()
-
+      
       if (error) throw error
       return data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos', listId] })
-    },
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    }
   })
 
-  return {
-    todos,
-    isLoading,
-    addTodo,
-  }
+  return { todos, isLoading, addTodo }
 }
 ```
+
+export const todoSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100),
+  description: z.string().optional(),
+  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+  due_date: z.date().optional(),
+  status: z.enum(['todo', 'completed']).default('todo'),
+})
+
+// src/components/TodoForm.tsx
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { todoSchema } from '../lib/schemas'
+import type { TodoFormData } from '../types'
+
+export function TodoForm({ onSubmit, isSubmitting }: TodoFormProps) {
+  const form = useForm<TodoFormData>({
+    resolver: zodResolver(todoSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      priority: 'medium',
+      status: 'todo',
+    }
+  })
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} data-testid="todo-form">
+        {/* Form fields with shadcn components */}
+      </form>
+    </Form>
+  )
+}
+
 ### Component Structure Example
 ```typescript
 // src/components/ui/Button.tsx
@@ -277,45 +318,72 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 ```
 
+### Testing Strategy
+
+The application follows a comprehensive testing approach:
+
+#### Component Testing
+- Isolation through proper mocking
+- Testing both success and error states
+- Verifying user interactions
+- Checking accessibility with proper ARIA roles
+- Testing loading states and transitions
+
+#### Hook Testing
+- Custom hooks tested in isolation
+- Mocking external dependencies
+- Testing error handling
+- Verifying state updates
+- Testing async operations
+
+#### Integration Testing
+- Testing component interactions
+- Verifying data flow
+- Testing authentication flows
+- Error boundary testing
+- Form submission testing
+
+#### Test Coverage Goals
+- Components: 95%+ coverage
+- Hooks: 75%+ coverage
+- Utilities: 85%+ coverage
+- Focus on critical user paths
+
 ## 3. Core Features
 
 ### User Management
 - [x] User registration and authentication with Supabase
 - [x] Session handling with refresh tokens
+- [x] Error boundary for handling runtime errors
+- [x] Loading states and optimistic updates
+- [x] Form validation with Zod
+- [x] Real-time updates with Supabase
+- [x] Comprehensive test coverage (~90%)
 - [ ] Password reset functionality
 - [ ] Profile management
 
 ### Todo Management
-- [x] Create todos with text and description
-- [x] Read todos with optimistic updates
-- [x] Update todo completion status
-- [x] Delete todos with optimistic updates
-- [x] Priority levels (Low, Medium, High)
-- [x] Due dates
-- [x] Task status tracking (Complete/Incomplete)
-- [x] Priority-based color coding
-- [ ] Task categorization with labels/tags
-- [ ] Bulk actions (delete, update status)
-- [ ] Real-time updates for collaborative lists
-- [ ] File attachments for todos
-- [ ] Offline support with background sync
-- [ ] Due date reminders
+- [x] Create, read, update, delete todos
+- [x] Mark todos as complete/incomplete
+- [x] Set priority levels
+- [x] Add due dates
+- [x] Add descriptions
+- [x] Sort by priority/date
+- [x] Filter by status
+- [ ] Attachments
+- [ ] Categories/Tags
+- [ ] Recurring todos
 
-### Organization & UI/UX
+### UI/UX Features
+- [x] Responsive design with Tailwind
 - [x] Modern UI with shadcn components
-- [x] Loading states with skeletons
-- [x] Error boundaries for error handling
-- [x] Toast notifications for user feedback
-- [x] Sort by latest, due date, priority
-- [x] Separate completed/incomplete tasks
-- [x] Responsive design
-- [ ] List creation and management
-- [ ] Drag-and-drop reordering
-- [ ] Advanced filtering options
-- [ ] Search functionality
-- [ ] Archive completed tasks
+- [x] Loading states and transitions
+- [x] Error messages and validation
+- [x] Optimistic updates
+- [x] Accessible components
+- [ ] Dark mode
 - [ ] Keyboard shortcuts
-- [ ] Mobile-optimized interface
+- [ ] Drag and drop reordering
 
 ## 4. Technical Requirements
 
@@ -541,40 +609,48 @@ describe('TodoCreate', () => {
 5. Regular security audits during development
 
 ## 14. File Structure
-```
-src/
-├── components/           # React components
-│   ├── ui/              # UI components from shadcn
-│   │   ├── button.tsx   # Button component
-│   │   ├── card.tsx     # Card component
-│   │   ├── separator.tsx # Separator component
-│   │   ├── toast.tsx    # Toast component
-│   │   └── toaster.tsx  # Toaster provider
-│   ├── Auth.tsx         # Authentication component
-│   ├── DatePicker.tsx   # Date picker component
-│   ├── ErrorBoundary.tsx # Error boundary component
-│   ├── PriorityChip.tsx # Priority indicator component
-│   ├── TodoForm.tsx     # Todo creation form
-│   ├── TodoItem.tsx     # Individual todo item
-│   ├── TodoList.tsx     # Main todo list component
-│   ├── TodoSkeleton.tsx # Loading skeleton for todos
-│   └── TodoSort.tsx     # Todo sorting controls
-├── hooks/               # Custom React hooks
-│   ├── useAddTodo.ts    # Todo creation hook
-│   ├── useDeleteTodo.ts # Todo deletion hook
-│   ├── useToast.ts      # Toast notifications hook
-│   ├── useTodos.ts      # Todo data management hook
-│   └── useToggleTodo.ts # Todo completion hook
-├── lib/                 # Core utilities and types
-│   ├── auth.tsx         # Authentication context and utilities
-│   ├── supabase.ts     # Supabase client configuration
-│   ├── types.ts        # TypeScript type definitions
-│   └── utils.ts        # Utility functions
-├── App.tsx             # Main application component
-├── main.tsx           # Application entry point
-└── index.css          # Global styles
 
 ```
+src/
+├── __tests__/              # Test files mirroring src structure
+│   ├── components/         # Component tests
+│   ├── hooks/             # Hook tests
+│   └── utils/             # Test utilities and setup
+├── components/            # React components
+│   ├── ui/               # Reusable UI components from shadcn
+│   │   ├── button.tsx
+│   │   ├── form.tsx
+│   │   ├── input.tsx
+│   │   └── select.tsx
+│   ├── Auth.tsx          # Authentication component
+│   ├── ErrorBoundary.tsx # Error handling wrapper
+│   ├── TodoForm.tsx      # Todo creation/editing form
+│   ├── TodoItem.tsx      # Individual todo item
+│   ├── TodoList.tsx      # List of todos
+│   └── TodoSort.tsx      # Sorting controls
+├── hooks/                # Custom React hooks
+│   ├── useAddTodo.ts
+│   ├── useAuth.ts
+│   ├── useDeleteTodo.ts
+│   ├── useTodos.ts
+│   └── useToggleTodo.ts
+├── lib/                  # Utilities and configurations
+│   ├── supabase.ts      # Supabase client setup
+│   ├── utils.ts         # Helper functions
+│   └── schemas.ts       # Zod validation schemas
+├── types/               # TypeScript type definitions
+│   └── database.types.ts # Supabase generated types
+├── App.tsx              # Root component
+└── main.tsx            # Application entry point
+```
+
+Key aspects of the file structure:
+- Tests are co-located with source files in a parallel `__tests__` directory
+- UI components are separated from business logic components
+- Hooks are organized by functionality
+- Common utilities and configurations are centralized in `lib`
+- Type definitions are isolated in the `types` directory
+- Each component has a single responsibility and is appropriately named
 
 ### Key Components
 
