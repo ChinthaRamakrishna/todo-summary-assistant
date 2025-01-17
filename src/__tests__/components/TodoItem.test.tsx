@@ -21,6 +21,8 @@ const mockHandlers = {
 };
 
 describe('TodoItem', () => {
+  const testID = 'test-todo';
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -33,15 +35,20 @@ describe('TodoItem', () => {
         onDelete={mockHandlers.onDelete}
         isUpdating={false}
         isDeleting={false}
+        testID={testID}
       />
     );
 
     // Check if todo text is rendered
-    expect(await screen.findByText(mockTodo.text)).toBeInTheDocument();
+    expect(screen.getByTestId(`${testID}-text`)).toHaveTextContent(mockTodo.text);
     
     // Check if the card has the correct priority-based styling
-    const card = screen.getByText(mockTodo.text).closest('.bg-yellow-50\\/50');
-    expect(card).toBeInTheDocument();
+    const card = screen.getByTestId(testID);
+    expect(card).toHaveClass('bg-yellow-50/50');
+
+    // Check if dates are rendered
+    expect(screen.getByTestId(`${testID}-created-date`)).toBeInTheDocument();
+    expect(screen.getByTestId(`${testID}-due-date`)).toBeInTheDocument();
   });
 
   it('calls onToggleComplete when checkbox is clicked', async () => {
@@ -52,13 +59,12 @@ describe('TodoItem', () => {
         onDelete={mockHandlers.onDelete}
         isUpdating={false}
         isDeleting={false}
+        testID={testID}
       />
     );
 
-    const checkbox = await screen.findByRole('checkbox', {
-      name: 'Mark "Test Todo" as complete'
-    });
-    await fireEvent.click(checkbox);
+    const checkbox = screen.getByTestId(`${testID}-checkbox`);
+    fireEvent.click(checkbox);
 
     expect(mockHandlers.onToggleComplete).toHaveBeenCalledWith(mockTodo.id, false);
   });
@@ -71,13 +77,12 @@ describe('TodoItem', () => {
         onDelete={mockHandlers.onDelete}
         isUpdating={false}
         isDeleting={false}
+        testID={testID}
       />
     );
 
-    const deleteButton = await screen.findByRole('button', {
-      name: 'Delete "Test Todo"'
-    });
-    await fireEvent.click(deleteButton);
+    const deleteButton = screen.getByTestId(`${testID}-delete`);
+    fireEvent.click(deleteButton);
 
     expect(mockHandlers.onDelete).toHaveBeenCalledWith(mockTodo.id);
   });
@@ -90,23 +95,22 @@ describe('TodoItem', () => {
         onDelete={mockHandlers.onDelete}
         isUpdating={false}
         isDeleting={false}
+        testID={testID}
       />
     );
 
     // Description should be visible by default (since mockTodo has a description)
-    expect(await screen.findByText('Test Description')).toBeInTheDocument();
+    expect(screen.getByTestId(`${testID}-description`)).toBeInTheDocument();
 
-    // Find the chevron button
-    const chevronButton = await screen.findByRole('button', {
-      name: 'Hide description'
-    });
-    await fireEvent.click(chevronButton);
+    // Find and click the expand button
+    const expandButton = screen.getByTestId(`${testID}-expand`);
+    fireEvent.click(expandButton);
 
     // Description should be hidden
-    expect(screen.queryByText('Test Description')).not.toBeInTheDocument();
+    expect(screen.queryByTestId(`${testID}-description`)).not.toBeInTheDocument();
 
     // Click again to show
-    await fireEvent.click(chevronButton);
-    expect(await screen.findByText('Test Description')).toBeInTheDocument();
+    fireEvent.click(expandButton);
+    expect(screen.getByTestId(`${testID}-description`)).toBeInTheDocument();
   });
 }); 

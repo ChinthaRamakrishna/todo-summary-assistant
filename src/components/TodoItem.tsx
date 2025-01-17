@@ -18,6 +18,7 @@ interface TodoItemProps {
   onDelete: (id: string) => void;
   isUpdating: boolean;
   isDeleting: boolean;
+  testID?: string;
 }
 
 export function TodoItem({ 
@@ -25,17 +26,18 @@ export function TodoItem({
   onToggleComplete, 
   onDelete,
   isUpdating,
-  isDeleting
+  isDeleting,
+  testID = 'todo-item'
 }: TodoItemProps) {
   const [isExpanded, setIsExpanded] = useState(!!todo.description);
 
-  // Update expanded state when todo changes
   useEffect(() => {
     setIsExpanded(!!todo.description);
   }, [todo.description]);
 
   return (
     <Card 
+      data-testid={testID}
       className={cn(
         "transition-all",
         !todo.completed && priorityStyles[todo.priority],
@@ -45,6 +47,7 @@ export function TodoItem({
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <Checkbox
+            data-testid={`${testID}-checkbox`}
             checked={todo.completed}
             onCheckedChange={() => onToggleComplete(todo.id, todo.completed)}
             className="h-5 w-5"
@@ -52,17 +55,21 @@ export function TodoItem({
             aria-label={`Mark "${todo.text}" as ${todo.completed ? 'incomplete' : 'complete'}`}
           />
           <div className="flex-1">
-            <span className={`text-lg ${
-              todo.completed 
-                ? 'line-through text-gray-400' 
-                : 'text-gray-700'
-            }`}>
+            <span 
+              data-testid={`${testID}-text`}
+              className={`text-lg ${
+                todo.completed 
+                  ? 'line-through text-gray-400' 
+                  : 'text-gray-700'
+              }`}
+            >
               {todo.text}
             </span>
           </div>
           <div className="flex items-center gap-2">
             {todo.description && (
               <Button
+                data-testid={`${testID}-expand`}
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -78,16 +85,23 @@ export function TodoItem({
               </Button>
             )}
             <div className="flex flex-col items-end gap-1">
-              <span className="text-xs text-gray-400">
+              <span 
+                data-testid={`${testID}-created-date`}
+                className="text-xs text-gray-400"
+              >
                 Created {new Date(todo.created_at).toLocaleDateString()}
               </span>
               {todo.due_date && (
-                <span className="text-xs text-gray-400">
+                <span 
+                  data-testid={`${testID}-due-date`}
+                  className="text-xs text-gray-400"
+                >
                   Due {new Date(todo.due_date).toLocaleDateString()}
                 </span>
               )}
             </div>
             <Button 
+              data-testid={`${testID}-delete`}
               variant="destructive" 
               size="icon"
               onClick={() => onDelete(todo.id)}
@@ -104,7 +118,10 @@ export function TodoItem({
           </div>
         </div>
         {todo.description && isExpanded && (
-          <div className="pl-8 pr-4 py-2 mt-2 text-gray-600 text-sm border-t">
+          <div 
+            data-testid={`${testID}-description`}
+            className="pl-8 pr-4 py-2 mt-2 text-gray-600 text-sm border-t"
+          >
             {todo.description}
           </div>
         )}
