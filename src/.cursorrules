@@ -36,6 +36,12 @@
   - Use act() to handle async operations in tests.
   - Mock external dependencies and APIs.
   - Use testIDs for querying elements in tests.
-  - Use beforeEach handles setup
-  - Use afterEach handles cleanup when needed
-  - Individual tests handle their specific test cases
+  - Use beforeEach for common setup, afterEach for cleanup.
+  - Keep individual tests focused on specific test cases.
+  - Wrap render calls in act() when testing components with state updates.
+  - Add descriptive testIDs to form elements (e.g., todo-form, todo-input).
+  - Handle loading/disabled states in UI component tests.
+  - Test error cases and edge conditions explicitly.
+  - Avoid duplicating render calls in individual test cases.
+  - Mock functions should be cleared after each test.
+  - Test both success and error paths for async operations.
