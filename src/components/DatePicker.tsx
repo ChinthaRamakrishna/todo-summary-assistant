@@ -16,6 +16,7 @@ interface DatePickerProps {
   fromDate?: Date
   toDate?: Date
   placeholder?: string
+  testID?: string
 }
 
 export function DatePicker({ 
@@ -24,7 +25,8 @@ export function DatePicker({
   className,
   fromDate = new Date(), // Default to today
   toDate,
-  placeholder = "Set due date"
+  placeholder = "Set due date",
+  testID = 'date-picker'
 }: DatePickerProps) {
   return (
     <Popover>
@@ -37,12 +39,13 @@ export function DatePicker({
             !date && "text-muted-foreground",
             className
           )}
+          data-testid={`${testID}-trigger`}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "MM/dd/yyyy") : placeholder}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-white" align="start">
+      <PopoverContent className="w-auto p-0 bg-white" align="start" data-testid={`${testID}-content`}>
         <Calendar
           mode="single"
           selected={date}
@@ -58,6 +61,7 @@ export function DatePicker({
             currentDate.setHours(0, 0, 0, 0)
             return currentDate < today
           }}
+          data-testid={`${testID}-calendar`}
         />
       </PopoverContent>
     </Popover>

@@ -112,16 +112,17 @@ describe('useToggleTodo', () => {
   });
 
   it('should handle errors when toggling a todo', async () => {
-    const error = new Error('Failed to update todo');
+    const error = {
+      code: '400',
+      message: 'Failed to update todo',
+    };
     mockUpdateTodoMutation.mutateAsync.mockRejectedValueOnce(error);
 
     const { result } = renderHook(() => useToggleTodo());
     const todoId = 'test-todo-id';
     const currentCompleted = false;
 
-    await act(async () => {
-      await result.current.toggleTodo(todoId, currentCompleted);
-    });
+    await result.current.toggleTodo(todoId, currentCompleted);
 
     // Verify optimistic update was reverted
     expect(mockQueryClient.setQueryData).toHaveBeenCalledTimes(2);

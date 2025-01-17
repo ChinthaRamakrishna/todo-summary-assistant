@@ -52,11 +52,14 @@ describe('useAddTodo', () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.mocked(useAuth).mockReturnValue({ user: mockUser, loading: false });
     vi.mocked(useQueryClient).mockReturnValue(mockQueryClient as any);
     vi.mocked(useToast).mockReturnValue(mockToast);
     vi.mocked(useTodos).mockReturnValue({ addTodo: mockAddTodoMutation } as any);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should add a todo successfully', async () => {
@@ -94,7 +97,10 @@ describe('useAddTodo', () => {
   });
 
   it('should handle errors when adding a todo', async () => {
-    const error = new Error('Failed to add todo');
+    const error = {
+      code: '400',
+      message: 'Failed to add todo',
+    };
     mockAddTodoMutation.mutateAsync.mockRejectedValueOnce(error);
 
     const { result } = renderHook(() => useAddTodo());
@@ -105,9 +111,7 @@ describe('useAddTodo', () => {
       completed: false,
     } as const;
 
-    await act(async () => {
-      await result.current.addTodo(newTodo);
-    });
+    await result.current.addTodo(newTodo);
 
     // Verify error toast
     expect(mockToast.toast).toHaveBeenCalledWith({

@@ -66,12 +66,15 @@ describe('useDeleteTodo', () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.mocked(useAuth).mockReturnValue({ user: mockUser, loading: false });
     vi.mocked(useQueryClient).mockReturnValue(mockQueryClient as any);
     vi.mocked(useToast).mockReturnValue(mockToast);
     vi.mocked(useTodos).mockReturnValue({ deleteTodo: mockDeleteTodoMutation } as any);
     mockQueryClient.getQueryData.mockReturnValue(mockTodos);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should delete a todo successfully', async () => {
@@ -126,15 +129,16 @@ describe('useDeleteTodo', () => {
   });
 
   it('should handle errors when deleting a todo', async () => {
-    const error = new Error('Failed to delete todo');
+    const error = {
+      code: '400',
+      message: 'Failed to delete todo',
+    };
     mockDeleteTodoMutation.mutateAsync.mockRejectedValueOnce(error);
 
     const { result } = renderHook(() => useDeleteTodo());
     const todoId = 'test-todo-id';
 
-    await act(async () => {
-      await result.current.deleteTodo(todoId);
-    });
+    await result.current.deleteTodo(todoId);
 
     // Verify cache was restored
     expect(mockQueryClient.setQueryData).toHaveBeenLastCalledWith(

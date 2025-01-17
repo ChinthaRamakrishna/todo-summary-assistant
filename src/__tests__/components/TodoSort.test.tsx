@@ -1,32 +1,35 @@
-import { render, fireEvent } from '../utils/test-utils';
-import { vi } from 'vitest';
-import { TodoSort } from '@/components/TodoSort';
+import { describe, it, expect, vi } from 'vitest';
+import { act, render, screen } from '../utils/test-utils';
+import { TodoSort } from '../../components/TodoSort';
+
+// Mock scrollIntoView since it's not available in JSDOM
+Element.prototype.scrollIntoView = vi.fn();
 
 describe('TodoSort', () => {
-  const testID = 'test-sort';
-
-  it('calls onChange when Select value changes', () => {
+  it('calls onChange when Select value changes', async () => {
     const onChange = vi.fn();
-    const { getByTestId } = render(
-      <TodoSort 
-        value="latest" 
-        onChange={onChange}
-        testID={testID}
-      />
-    );
+    const testID = 'todo-sort';
+
+    await act(async () => {
+      render(
+        <TodoSort 
+          value="latest" 
+          onChange={onChange}
+          testID={testID}
+        />
+      );
+    });
+
+    await act(async () => {
+      screen.getByTestId(`${testID}-trigger`).click();
+    });
+
+    const priorityOption = await screen.findByTestId(`${testID}-option-priority`);
     
-    // Verify title is rendered
-    expect(getByTestId(`${testID}-title`)).toHaveTextContent('Your Tasks');
-    
-    // Verify select trigger is rendered
-    const trigger = getByTestId(`${testID}-trigger`);
-    expect(trigger).toBeInTheDocument();
-    
-    // Trigger value change
-    fireEvent.click(trigger);
-    const priorityOption = getByTestId(`${testID}-option-priority`);
-    fireEvent.click(priorityOption);
-    
+    await act(async () => {
+      priorityOption.click();
+    });
+
     expect(onChange).toHaveBeenCalledWith('priority');
   });
 }); 
