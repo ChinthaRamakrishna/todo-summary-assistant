@@ -6,19 +6,21 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
-    globals: true,
     environment: 'jsdom',
-    setupFiles: ['./jest.setup.ts'],
-    include: ['**/__tests__/**/*.test.{ts,tsx}'],
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    exclude: ['**/*.integration.{js,jsx,ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
       exclude: [
-        'node_modules/',
-        'src/vite-env.d.ts',
-        'src/main.tsx',
-        'src/**/*.d.ts',
-      ],
-    },
-  },
+        'node_modules/**',
+        'src/components/ui/**',
+        'dist/**',
+        '**/*.d.ts',
+        '**/*.integration.{js,jsx,ts,tsx}'
+      ]
+    }
+  }
 }); 
